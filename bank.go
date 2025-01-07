@@ -1,38 +1,15 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"strconv"
+
+	"example.com/bank/fileops"
 )
 
 const accountBalanceFileName = "balance.txt"
 
-func readBalanceFromFile() (float64, error) {
-	content, err := os.ReadFile(accountBalanceFileName)
-
-	if err != nil {
-		return 0, errors.New("Balance file not found")
-	}
-
-	balancetext := string(content)
-	balance, error := strconv.ParseFloat(balancetext, 64)
-
-	if error != nil {
-		return 0, errors.New("Failed to parse balance")
-	}
-
-	return balance, nil
-}
-
-func writeBalanceToFile(balance float64) {
-	balancetext := fmt.Sprint(balance)
-	os.WriteFile(accountBalanceFileName, []byte(balancetext), 0644)
-}
-
 func main() {
-	accountBalance, err := readBalanceFromFile()
+	accountBalance, err := fileops.ReadFLoatFromFile(accountBalanceFileName, 0)
 
 	if err != nil {
 		fmt.Println("ERROR: ", err)
@@ -62,7 +39,7 @@ func main() {
 
 			accountBalance += depositAmount
 			fmt.Println("Balance updated! new amount: ", accountBalance)
-			writeBalanceToFile(accountBalance)
+			fileops.WriteFloatToFile(accountBalance, accountBalanceFileName)
 		case 3:
 			var withdrawalAmount float64
 			fmt.Println("How much would you like to withdraw?")
@@ -80,7 +57,7 @@ func main() {
 
 			accountBalance -= withdrawalAmount
 			fmt.Println("Balance updated! new amount: ", accountBalance)
-			writeBalanceToFile(accountBalance)
+			fileops.WriteFloatToFile(accountBalance, accountBalanceFileName)
 		default:
 			fmt.Println("Goodbye!")
 			fmt.Println("Thanks for choosing Go bank")
